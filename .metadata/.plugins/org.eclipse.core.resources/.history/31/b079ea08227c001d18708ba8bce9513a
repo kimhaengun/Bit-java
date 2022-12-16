@@ -1,0 +1,14 @@
+package com.bit;
+
+public class Ex05 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String msg = "abcABC1234!@#$";
+		String str1 = msg.toUpperCase();
+		String str2 = msg.toLowerCase();
+		System.out.println(str1);
+		System.out.println(str2);
+	}
+
+}

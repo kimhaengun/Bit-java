@@ -1,0 +1,14 @@
+package com.bit;
+
+public class Ex05 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		// 문자들의 집합
+		System.out.println("흐에!");
+		String str = "문좌욜";
+		System.out.println(str);
+	}
+}
+

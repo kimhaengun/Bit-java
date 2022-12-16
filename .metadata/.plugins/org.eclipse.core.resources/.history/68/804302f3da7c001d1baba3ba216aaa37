@@ -1,0 +1,21 @@
+package com.bit;
+/*
+ * 상속~~~~~
+ */
+class Lec02{
+	int su1=1111;
+	void func01() {
+		System.out.println("Lec02의 func01()");
+	}
+}
+
+public class Ex02 extends Lec02{
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Ex02 ex02 = new Ex02();
+		System.out.println(ex02.su1);
+		ex02.func01();
+	}
+
+}

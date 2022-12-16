@@ -1,0 +1,22 @@
+package com.bit;
+
+public class Ex08 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String msg1 = "abcd";
+		char[] arr1 = msg1.toCharArray();
+		for (int i = 0; i < arr1.length; i++) {
+			System.out.println(arr1[i]);
+		}
+		
+		char[] arr2 = new char[4];
+		arr[0] = 'A';
+		arr[1] = 'B';
+		arr[2] = 'C';
+		arr[3] = 'D';
+		String msg2 = new String(arr2);
+		System.out.println(msg2);
+	}
+
+}

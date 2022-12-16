@@ -1,0 +1,17 @@
+package com.bit;
+
+public class Ex09 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String[] arr1 = new String[4];
+
+		Ex09[] arr2 = new Ex09[3];
+		
+		for (int i = 0; i < arr1.length; i++) {
+			System.out.println(arr1[i]);
+		}
+		
+	}
+
+}

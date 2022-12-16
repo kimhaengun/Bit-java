@@ -1,0 +1,12 @@
+package com.bit;
+
+public class Ex07 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String msg1 = "가나";
+		byte[] arr1 =msg1.getBytes();
+		System.out.println(arr1.length);
+	}
+
+}
