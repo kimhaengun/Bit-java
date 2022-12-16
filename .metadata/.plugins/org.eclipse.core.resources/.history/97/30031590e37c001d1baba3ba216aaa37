@@ -21,7 +21,6 @@ public class Ex04 extends Lec04{
 	//  = 메서드 오버라이드     --> 메서드를 재정의 해버림
 	//					       접근 제한자는 같거나 보다 열리는 방향으로만 허용
 	// * 메서드만 해당 *
-	@Override
 	public void func01() {
 		System.out.println("Ec04-func01()");
 	}
