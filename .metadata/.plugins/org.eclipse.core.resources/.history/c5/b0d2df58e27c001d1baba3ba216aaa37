@@ -27,21 +27,12 @@ public class Ex04 extends Lec04{
 	public String toString() {
 		return "나야나";
 	}
-	public boolean equlas(Object obj) {
-		return 0==this.su-((Ex04)obj).su;
-	}
-	int su;
-	public Ex04(int su) {
-		this.su=su;
-		
-	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Ex04 ex04 = new Ex04(1);
-		Ex04 ex040 = new Ex04(2);
+		Ex04 ex04 = new Ex04();
 //		ex04.func01();
 //		System.out.println(ex04.su1);
-//		System.out.println(ex04);
+		System.out.println(ex04);
 	}
 
 }
