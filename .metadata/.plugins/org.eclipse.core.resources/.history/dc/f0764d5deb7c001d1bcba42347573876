@@ -10,8 +10,6 @@ class Lec05{
 public class Ex05 extends Lec05{
 	int su1 =2222;
 	void func01() {
-		
-		// super --> 내가 아닌 부모를 참조하게 됨.
 		super.func01();
 		System.out.println("자식 기능"+super.su1);
 	}

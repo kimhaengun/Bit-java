@@ -4,15 +4,12 @@ package com.bit;
 class Lec05{
 	int su1 =1111;
 	void func01() {
-		System.out.println("부모 기능"+su1);
+		System.out.println("Lec04 부모-func01()"+su1);
 	}
 }
 public class Ex05 extends Lec05{
 	int su1 =2222;
 	void func01() {
-		
-		// super --> 내가 아닌 부모를 참조하게 됨.
-		super.func01();
 		System.out.println("자식 기능"+super.su1);
 	}
 

@@ -1,0 +1,13 @@
+package com.bit;
+
+class Lec06{
+	void func01() {
+		System.out.println("부모 기능");
+	}
+}
+public class Ex06 extends Lec06{
+	public static void main(String[] args) {
+		Ex06 ex06 = new Ex06();
+		ex06.func01();
+	}
+}
