@@ -41,6 +41,7 @@ public class Ex10 {
 		while (boo) {
 			// 조건 1. 받은 문자열에  - 검사 
 			if(inputNum.contains("-")) {
+				
 				String[] splitDataArray = inputNum.split("-");
 //				System.out.println(splitDataArray[0].substring(0, 2));
 //				System.out.println(splitDataArray[1].substring(0, 1));
