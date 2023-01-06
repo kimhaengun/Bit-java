@@ -1,0 +1,21 @@
+package com.bit;
+
+public class Ex12Thread {
+
+	public static void main(String[] args) {
+		Thread thr = new Thread() {
+			public void run() {
+				System.out.println("new thread start");
+				try {
+					
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("new thread end");
+			}
+		};
+		thr.start();
+	}
+}

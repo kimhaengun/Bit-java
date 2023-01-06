@@ -1,0 +1,13 @@
+package com.bit;
+
+public class Ex12Thread {
+
+	public static void main(String[] args) {
+		Thread thr = new Thread() {
+			public void run() {
+				System.out.println("new thread");
+			}
+		};
+		thr.start();
+	}
+}

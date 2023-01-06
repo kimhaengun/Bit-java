@@ -1,0 +1,19 @@
+package com.bit;
+import java.net.*;
+public class Receiver {
+
+	public static void main(String[] args) {
+		DatagramSocket sock = null;
+		DatagramPacket packet = null;
+		
+		try {
+			sock = new DatagramSocket(8080);
+			packet = new 
+			
+			sock.receive(packet);
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

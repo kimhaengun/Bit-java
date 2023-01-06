@@ -1,0 +1,28 @@
+package com.bit;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+
+public class Ex03 {
+
+	public static void main(String[] args) {
+		File f = new File("test03.txt");
+		Writer pw = null;
+			try {
+				if(!f.exists())f.createNewFile();
+				pw = new FileWriter(f);
+				
+				pw.write('#');
+				pw.write('@');
+				
+				
+				if(pw!=null)pw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+	}
+}

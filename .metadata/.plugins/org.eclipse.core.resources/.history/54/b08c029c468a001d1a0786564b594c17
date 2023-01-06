@@ -1,0 +1,29 @@
+package com.bit;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+
+public class Ex03 {
+
+	public static void main(String[] args) {
+		File f = new File("test03.txt");
+		Writer pw = null;
+			try {
+				if(!f.exists())f.createNewFile();
+				pw = new FileWriter(f);
+				
+				for (int i = '가'; i <= '하'; i++) {
+					pw.write(i);
+				}
+				
+				
+				if(pw!=null)pw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+	}
+}

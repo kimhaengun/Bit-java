@@ -1,0 +1,65 @@
+package com.step02;
+
+import java.io.*;
+import java.net.*;
+import java.util.Scanner;
+/*
+ * 클라이언트에서 메시지 보내고 서버로부터 읽기
+ */
+public class Client {
+
+	public static void main(String[] args) {
+		String url="127.0.0.1";
+		int port = 8080;
+		Socket sock = null;
+		InputStream is = null;
+		OutputStream os = null;
+		InputStreamReader isr = null;
+		OutputStreamWriter osw = null;
+		BufferedReader br = null;
+		PrintWriter pw = null;
+		
+		Scanner sc = new Scanner(System.in);
+		
+		try {
+			sock = new Socket(url,port); //접속 완료
+			is = sock.getInputStream();
+			os = sock.getOutputStream();
+			isr = new InputStreamReader(is);
+			osw = new OutputStreamWriter(os);
+			br = new BufferedReader(isr);
+			pw = new PrintWriter(osw);
+			String msg = null;
+			while(true) {
+				System.out.println("메시지 >");
+				msg = sc.nextLine();
+				pw.println(msg);
+				msg = br.readLine();
+				System.out.println(msg);
+			}
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				if(pw!=null)pw.close();
+				if(br!=null)br.close();
+				if(osw!=null)osw.close();
+				if(isr!=null)isr.close();
+				if(os!=null)os.close();
+				if(is!=null)is.close();
+				if(sock!=null)sock.close();				
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+
+		}
+		
+		
+		
+		
+		
+	}
+}

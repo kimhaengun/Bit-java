@@ -1,0 +1,18 @@
+package com.bit;
+
+import java.awt.Frame;
+
+public class Ex01 extends Frame{
+
+	public Ex01() {
+		
+		
+		
+		setBounds(100, 100, 850, 850);
+		setVisible(true);
+	}
+	
+	public static void main(String[] args) {
+		Ex01 me = new Ex01();
+	}
+}

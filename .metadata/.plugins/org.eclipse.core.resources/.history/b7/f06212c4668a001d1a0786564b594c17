@@ -1,0 +1,34 @@
+package com.bit;
+
+import java.awt.Frame;
+import java.awt.Label;
+import java.util.Date;
+
+class Lec13 extends Frame{
+	
+	Label la = new Label();
+	public Lec13() {
+		
+		add(la);
+		setBounds(100,100,300,150);
+		setVisible(true);
+		loading();
+	}
+	public void loading() {
+		while(true) {
+			la.setText(new Date().toString());
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+}
+public class Ex13 {
+
+	public static void main(String[] args) {
+		Lec13 ti = new Lec13();
+	}
+}

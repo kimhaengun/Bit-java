@@ -1,0 +1,21 @@
+package com.bit;
+
+class Lec04 extends Thread{
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		for (int i = 0; i < 100; i++) {
+			System.out.println(getName()+" working ...");
+		}
+	}
+}
+public class Ex04 {
+
+	public static void main(String[] args) {
+		Lec04 ex1 = new Lec04();
+		Lec04 ex2 = new Lec04();
+		ex1.start();
+		ex2.start();
+		
+	}
+}

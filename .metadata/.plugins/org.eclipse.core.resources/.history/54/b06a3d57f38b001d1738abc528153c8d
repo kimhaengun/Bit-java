@@ -1,0 +1,39 @@
+package com.step01;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Arrays;
+/*
+ * 서버는 Sock 객체를 생성하지 않고 Client socket 객체를 반환 받아야함
+ * Server = OutputStram
+ */
+public class Server {
+
+	public static void main(String[] args) {
+		Socket sock = null;
+		ServerSocket serve=null;
+		InetAddress inet = null;
+		OutputStream os =null;
+		try {
+			serve = new ServerSocket(8080); //Client와 소통할 수 있도록 포트 번호 열어놔야함
+			sock = serve.accept(); //클라이언트 접속 대기 / 클라이언트 들어오면 sock 반환
+//			inet = sock.getInetAddress(); //요청온 클라이언트 정보 받기
+//			System.out.println(inet.getHostAddress()+Arrays.toString(inet.getAddress())+"클라이언트 요청 받음");
+			os = sock.getOutputStream();
+			os.write("안녕".getBytes());
+			
+			
+			if(os!=null)os.close();
+			if(sock!=null)sock.close();
+			if(serve!=null)serve.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+}

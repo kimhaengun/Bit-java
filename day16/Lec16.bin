@@ -1,0 +1,317 @@
+package com.test;
+
+import java.io.*;
+import java.util.*;
+
+class Student implements Serializable{
+   private static final long serialVersionUID = 1L;
+   private int id, kor, eng, math;
+   
+   Student(int id, int kor, int eng, int math){
+      this.id = id;
+      this.kor = kor;
+      this.eng = eng;
+      this.math = math;
+   }
+   
+   public int getId() {
+      return id;
+   }
+   
+   public int getKor() {
+      return kor;
+   }
+   
+   public int getMath() {
+      return math;
+   }
+   
+   public int getEng() {
+      return eng;
+   }
+   
+   public void setId(int id) {
+      this.id = id;
+   }
+   
+   public void setKor(int kor) {
+      this.kor = kor;
+   }
+   
+   public void setEng(int eng) {
+      this.eng = eng;
+   }
+   
+   public void setMath(int math) {
+      this.math = math;
+   }
+}
+
+public class Ex04 {
+   public static void main(String[] args) {
+      ArrayList<Student> studentInfo = loadData();
+      Scanner sc = new Scanner(System.in);
+      boolean isExit = false;
+      int input;
+
+      System.out.println("학생성적관리프로그램(ver 0.5.0)");
+      System.out.println("교과목 -국어,영어,수학");
+      
+      while(!isExit) {
+         System.out.print("1.리스트 2.보기 3.입력 4.수정 5.삭제 0.종료>");
+         try {
+            input = sc.nextInt();
+            if(input==0) {
+               System.out.println("프로그램이 종료되었습니다.");
+               isExit = true;
+            } else if(input==1) {
+               showList(studentInfo);
+            } else if(input==2) {
+               veiwDetail(studentInfo);
+            } else if(input==3) {
+               addData(studentInfo);
+            } else if(input==4) {
+               editData(studentInfo);
+            } else if(input==5) {
+               deleteData(studentInfo);
+            } else {
+               System.out.println("번호를 정확하게 입력해주세요.");
+            }           
+         } catch (InputMismatchException e) {
+            System.out.println("숫자만 입력해주세요");
+            sc.nextLine();
+            continue;
+         }
+         
+      }     
+   }
+   public static void showList(ArrayList<Student> studentInfo) {
+      if(!studentInfo.isEmpty()) {
+         System.out.println("학번\t국어\t영어\t수학");
+         for(int i=0; i<studentInfo.size(); i++) {
+            System.out.print(studentInfo.get(i).getId()+"\t");
+            System.out.print(studentInfo.get(i).getKor()+"\t");
+            System.out.print(studentInfo.get(i).getEng()+"\t");
+            System.out.println(studentInfo.get(i).getMath()+"\t");
+         }
+      } else {
+         System.out.println("데이터가 존재하지 않습니다 데이터를 입력하세요.");
+      }           
+   }
+   
+   public static void veiwDetail(ArrayList<Student> studentInfo){
+      Scanner sc = new Scanner(System.in);
+      int id;
+      int idx=0;
+      boolean check= false;
+      System.out.print("조회할 학생의 학번 입력>");
+      try {
+         id = sc.nextInt();
+         
+         for(int i=0; i<studentInfo.size(); i++) {
+            if(studentInfo.get(i).getId()==id) {
+               idx=i;
+               check = true;
+               break;
+            }
+            
+         }
+         if(check) {
+            double average;
+            double overallAvg;
+            int overallSum=0;
+            int total=studentInfo.get(idx).getKor()+studentInfo.get(idx).getEng()
+                  +studentInfo.get(idx).getMath();
+            
+            for(int j = 0; j<studentInfo.size(); j++) {
+               overallSum = overallSum 
+                     +studentInfo.get(j).getKor()
+                     +studentInfo.get(j).getEng()
+                     +studentInfo.get(j).getMath();               
+            }
+            
+            average=(total*1.0)/3;
+            overallAvg=(overallSum*1.0)/((studentInfo.size())*3);
+            System.out.println(String.format("합계: %d, 평균: (%.2f/%.2f), 학점: %s",
+                  total, average, overallAvg, gradeCalculator(average)));           
+         } else {
+            System.out.println("존재하지 않는 학생입니다.");
+         }
+         
+      } catch(Exception e) {
+         System.out.println("숫자만 입력해주세요");
+         return;
+      }
+   }
+   
+   public static void addData(ArrayList<Student> studentInfo) {
+      Scanner sc = new Scanner(System.in);
+      int id, kor, eng, math;
+      try {
+         System.out.print("추가할 학생의 학번 : ");
+         id = sc.nextInt();
+         for(int i = 0; i < studentInfo.size(); i++) {
+            if(studentInfo.get(i).getId()==id) {
+               System.out.println("이미 존재하는 학생입니다.");
+               return;
+            }
+         }
+         
+         System.out.print("국어 : ");
+         kor = sc.nextInt();
+         if(0>kor || 100<kor) {
+            System.out.println("점수는 0~100점 사이입니다.");
+            return;
+         }
+         
+         System.out.print("영어 : ");
+         eng = sc.nextInt();        
+         if(0>eng || 100<eng) {
+            System.out.println("점수는 0~100점 사이입니다.");
+            return;
+         }
+         
+         System.out.print("수학 : ");
+         math = sc.nextInt();
+         if(0>math || 100<math) {
+            System.out.println("점수는 0~100점 사이입니다.");
+            return;
+         }
+      } catch(Exception e) {
+         System.out.println("숫자만 입력해주세요");
+         return;
+      }
+      studentInfo.add(new Student(id, kor, eng, math));
+      saveData(studentInfo);
+      System.out.println("추가되었습니다.");
+   }
+   
+   public static void editData(ArrayList<Student> studentInfo) {
+      Scanner sc = new Scanner(System.in);
+      int id, kor, eng, math;
+      int idx =0;
+      boolean check = false;
+      try {
+         System.out.print("수정할 학생의 학번 : ");
+         id = sc.nextInt();
+         for(int i = 0; i < studentInfo.size(); i++) {
+            if(studentInfo.get(i).getId()==id) {
+               idx=i;
+               check = true;
+               break;
+            }
+         }
+         if(check) {
+            System.out.print("국어 : ");
+            kor = sc.nextInt();
+            if(0>kor || kor>100) {
+               System.out.println("점수는 0~100점 사이입니다.");
+               return;
+            }
+            
+            System.out.print("영어 : ");
+            eng = sc.nextInt();        
+            if(0>eng || eng>100) {
+               System.out.println("점수는 0~100점 사이입니다.");
+               return;
+            }
+            
+            System.out.print("수학 : ");
+            math = sc.nextInt();
+            if(0>math || math>100) {
+               System.out.println("점수는 0~100점 사이입니다.");
+               return;
+            }
+         }else {
+            System.out.println("존재하지 않는 학생입니다.");
+            return;
+         }
+         
+      } catch(Exception e) {
+         System.out.println("숫자만 입력해주세요");
+         return;
+      }
+      studentInfo.get(idx).setKor(kor);
+      studentInfo.get(idx).setEng(eng);
+      studentInfo.get(idx).setMath(math);
+      saveData(studentInfo);
+      System.out.println("수정되었습니다.");
+   }
+   
+   public static void deleteData(ArrayList<Student> studentInfo) {
+      Scanner sc = new Scanner(System.in);
+      int id;
+      System.out.print("삭제할 학생의 학번>");
+      try {
+         id = sc.nextInt();         
+         for(int i=0; i<studentInfo.size(); i++) {
+            if(studentInfo.get(i).getId()==id) {
+               studentInfo.remove(i);
+               System.out.println("삭제가 완료되었습니다.");
+               saveData(studentInfo);
+               return;
+            }
+         }
+         System.out.println("존재하지 않는 학생입니다.");
+      } catch(Exception e) {
+         System.out.println("숫자만 입력해주세요");
+         return;
+      }
+   }
+   
+   public static String gradeCalculator(double average) {
+      String grade="";
+      if(average>=90) {
+         grade="A";
+      } else if(average>=80 && average<90) {
+         grade="B";
+      } else if(average>=80 && average<90) {
+         grade="C";
+      } else if(average>=80 && average<90) {
+         grade="D";
+      } else {
+         grade="F";
+      }
+      
+      return grade;
+   }
+   
+   public static void saveData(ArrayList<Student> studentInfo) {
+      File f = new File("student");
+      OutputStream os=null;
+      ObjectOutputStream oos=null;
+      try {
+         if(!f.exists()) f.createNewFile();
+         os=new FileOutputStream(f);
+         oos=new ObjectOutputStream(os);
+         
+         oos.writeObject(studentInfo);
+         
+         oos.close();
+         os.close();
+      } catch (Exception e) {
+      }
+   }
+   
+   public static ArrayList<Student> loadData(){
+      File f = new File("student");
+      InputStream is=null;
+      ObjectInputStream ois=null;
+      try {
+         if(f.exists()) {
+            is=new FileInputStream(f);
+            ois=new ObjectInputStream(is);
+            
+            ArrayList<Student> studentInfo = (ArrayList<Student>) ois.readObject();
+            
+            ois.close();
+            is.close();
+            
+            return studentInfo;
+         }           
+      } catch(Exception e) {
+      }
+      return new ArrayList<Student>();
+   }
+}
+

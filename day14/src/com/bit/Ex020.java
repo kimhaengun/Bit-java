@@ -180,4 +180,5 @@ public class Ex020 {
 		System.out.println("영어:"+((Student)studentMap.get(input)).engScore);
 		System.out.println("수학:"+((Student)studentMap.get(input)).matScore);
 	}
+
 }

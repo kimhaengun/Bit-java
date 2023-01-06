@@ -1,0 +1,29 @@
+package com.step01;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+/*
+ * 서버는 Sock 객체를 생성하지 않고 Client socket 객체를 반환 받아야함
+ */
+public class Server {
+
+	public static void main(String[] args) {
+		Socket sock = null;
+		ServerSocket serve=null;
+		try {
+			serve = new ServerSocket(8080); //Client와 소통할 수 있도록 포트 번호 열어놔야함
+			sock = serve.accept(); //클라이언트 접속 대기 / 클라이언트 들어오면 sock 반환
+			
+			System.out.println("클라이언트 요청 받음");
+			
+			if(sock!=null)sock.close();
+			if(serve!=null)serve.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+}

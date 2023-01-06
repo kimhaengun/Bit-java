@@ -1,0 +1,41 @@
+package com.bit;
+
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Frame;
+import java.awt.Label;
+import java.awt.Panel;
+
+public class Ex01 extends Frame{
+
+	public Ex01() {
+		setLayout(new BorderLayout());
+		Panel pn = new Panel();
+		Label nla = new Label("60s");
+		pn.add(nla);
+		Panel ps = new Panel();
+		Label sla = new Label("Num:0");
+		ps.add(sla);
+		Panel pc = new Panel();
+		Panel pe = new Panel();
+		Button startBtn = new Button("start");
+		Button endBtn = new Button("end");
+		pe.add(startBtn);
+		pe.add(endBtn);
+		
+		
+		add(pn,BorderLayout.NORTH);
+		add(ps,BorderLayout.SOUTH);
+		add(pc,BorderLayout.CENTER);
+		add(pe,BorderLayout.EAST);
+		
+		
+		
+		setBounds(100, 100, 450, 450);
+		setVisible(true);
+	}
+	
+	public static void main(String[] args) {
+		Ex01 me = new Ex01();
+	}
+}

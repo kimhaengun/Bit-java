@@ -1,0 +1,33 @@
+package com.bit;
+
+
+class Lec06 extends Thread{
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		for (int i = 0; i < 10; i++) {
+			synchronized (this) {
+				System.out.println(i+1+"번 수행...");
+			}
+			
+		}
+		
+	}
+}
+
+public class Ex06 {
+	public static void main(String[] args) {
+		Lec06 lec = new Lec06();
+		lec.start();
+		synchronized (lec) {
+			try {
+				System.out.println("wait!!!");
+				lec.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+		
+	}
+}

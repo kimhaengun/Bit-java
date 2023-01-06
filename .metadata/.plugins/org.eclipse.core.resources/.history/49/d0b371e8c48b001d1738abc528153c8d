@@ -1,0 +1,18 @@
+package com.bit;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+public class Ex01 {
+	public static void main(String[] args) {
+		InetAddress addr1 = null;
+		try {
+			addr1 = InetAddress.getByName("naver.com");
+			System.out.println(addr1.getHostName());
+			System.out.println(addr1.getHostAddress());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

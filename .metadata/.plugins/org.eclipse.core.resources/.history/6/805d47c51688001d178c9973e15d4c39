@@ -1,0 +1,74 @@
+package com.bit;
+
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.Panel;
+import java.awt.TextArea;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFrame;
+
+public class Ex17 extends Frame implements ActionListener{
+	
+	public Ex17() {
+		WindowAdapter eve = new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				dispose();
+			}
+		};
+		Panel p = new Panel();
+		
+		MenuBar mb = new MenuBar();
+		Menu m1 = new Menu("파일");
+		MenuItem mi1 = new MenuItem("새로만들기");
+		MenuItem mi2 = new MenuItem("열기");
+		mi2.addActionListener(this);
+
+		MenuItem mi3 = new MenuItem("저장");
+		MenuItem mi4 = new MenuItem("종료");
+		Menu m2 = new Menu("도움말");
+		MenuItem mi5 = new MenuItem("정보");
+		mi5.addActionListener(this);
+		
+		
+		TextArea ta = new TextArea("",21,35,TextArea.SCROLLBARS_BOTH);
+		m1.add(mi1);
+		m1.add(mi2);
+		m1.add(mi3);
+		m1.add(mi4);
+		m2.add(mi5);
+		mb.add(m1);
+		mb.add(m2);
+		
+		setMenuBar(mb);
+		p.add(ta);
+		add(p);
+		addWindowListener(eve);
+		setBounds(500, 100, 300, 400);
+		setVisible(true);
+	}
+	public static void main(String[] args) {
+		Ex17 me = new Ex17();
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println(e.getActionCommand());
+		if(e.getActionCommand().equals("열기")) {
+			System.out.println("열기 클릭했네요");
+			FileDialog fda = new FileDialog(this,"팝업창",FileDialog.LOAD);
+			fda.setBounds(200, 200, 200, 200);
+			fda.setVisible(true);
+		}else if(e.getActionCommand().equals("정보")) {
+			System.out.println("정보 클릭했네요");
+		}
+	}
+}
