@@ -1,0 +1,13 @@
+package com.test;
+
+import java.net.Socket;
+
+public class Client {
+	protected Socket clientSocket;
+	public static void main(String[] args) {
+		String url = "127.0.0.1";
+		int port = 8080;
+		
+		LoginForm lf = new LoginForm();
+	}
+}

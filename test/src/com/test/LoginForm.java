@@ -18,40 +18,26 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-class UserInfo{
-	private String userId;
-	private String userPassword;
-	
-	public UserInfo(String userId, String userPassword) {
-		this.userId = userId;
-		this.userPassword = userPassword;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public String getUserPassword() {
-		return userPassword;
-	}
-
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
-	}
-	
-	
-}
 
 
 public class LoginForm extends Frame implements MouseListener,ActionListener{
+	
 	//로그인
 	Panel northP, centerP, idP, pwP, eastP, southP;
 	JLabel northL, joinL;
@@ -65,6 +51,19 @@ public class LoginForm extends Frame implements MouseListener,ActionListener{
 	Label joinIdL, joinPwL;
 	JButton joinBtn;
 	TextField joinIdTf,joinPwTf;
+	UserInfo userInfo;
+	Socket clientSock;
+//	ArrayList<UserInfo> userList = new ArrayList<UserInfo>();
+	OutputStream os = null;
+	ObjectOutputStream oos =null;
+	
+	public LoginForm(Socket clientSock) {
+		this.clientSock = clientSock;
+		System.out.println("Log : "+this.clientSock);
+		new LoginForm();
+	}
+	
+	
 	public LoginForm() {
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -74,14 +73,15 @@ public class LoginForm extends Frame implements MouseListener,ActionListener{
 				dispose();
 			}
 		});
-		setTitle("로그인");
-		setLayout(new BorderLayout());
+		
+
 		
 		init();
 		setting();
 		batch();
-		
+		//Listener
 		joinL.addMouseListener(this);
+		loginBtn.addActionListener(this);
 		setVisible(true);
 	}
 	
@@ -108,11 +108,12 @@ public class LoginForm extends Frame implements MouseListener,ActionListener{
 		southP = new Panel();
 		joinL = new JLabel();
 		
-		//<회원가입 창>
 		
 	}
 	
 	public void setting() {
+		setTitle("로그인");
+		setLayout(new BorderLayout());
 		centerP.setLayout(new FlowLayout());
 		loginBtn.setPreferredSize(di);	
 		joinL.setText("회원가입");
@@ -139,8 +140,15 @@ public class LoginForm extends Frame implements MouseListener,ActionListener{
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		//회원가입 클릭 시 회원가입 폼 띄우기
-		System.out.println("회원가입 클릭 됨");
 		dia = new Dialog(this);
+		dia.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+//				if(!change)dispose();
+				dia.dispose();
+			}
+		});
 		joinP = new Panel();
 		joinP1  = new Panel();
 		joinP2 = new Panel();
@@ -150,23 +158,11 @@ public class LoginForm extends Frame implements MouseListener,ActionListener{
 		joinPwL = new Label("PW :");
 		joinPwTf = new TextField(30);
 		joinBtn = new JButton("회원가입");		
-		
-		dia.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// TODO Auto-generated method stub
-//				if(!change)dispose();
-				dia.dispose();
-			}
-		});
+		joinBtn.addActionListener(this);
 		dia.setTitle("회원가입");
 		
-		
 		joinP.setLayout(new BorderLayout());
-		
 
-		
-		
 		joinP1.add(joinIdL);
 		joinP1.add(joinIdTf);
 		joinP1.add(joinPwL);
@@ -212,7 +208,70 @@ public class LoginForm extends Frame implements MouseListener,ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		System.out.println(e.getActionCommand());
 		
+		if(e.getActionCommand().equals("회원가입")) { //회원가입 Action
+			String userJoinId = joinIdTf.getText();
+			String userJoinPw = joinPwTf.getText();
+			userInfo = new UserInfo(userJoinId, userJoinPw);		
+//			userList.add(userInfo);
+			Map<String, UserInfo> userJoinInfo = new HashMap<String, UserInfo>();
+			userJoinInfo.put("join", userInfo);
+			
+			System.out.println(userJoinInfo.get("join").getUserId());
+			System.out.println(userJoinInfo.get("join").getUserPassword());
+
+			try {				
+					os = clientSock.getOutputStream();
+					oos = new ObjectOutputStream(os);					
+					oos.writeObject(userJoinInfo);
+
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} 
+			
+//			File f = new File("userList.bin");
+//			OutputStream os = null;
+//			ObjectOutputStream oos = null;
+//			try {
+//				if(!f.exists()) {
+//					f.createNewFile();
+//				}
+//				os = new FileOutputStream(f);
+//				oos = new ObjectOutputStream(os);
+//				
+//				oos.writeObject(userList);
+//				
+//				System.out.println("회원가입 완료");
+//				dia.dispose();
+//			} catch (FileNotFoundException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} catch (IOException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}finally {
+//				try {
+//					if(oos!=null)oos.close();
+//					if(oos!=null)os.close();
+//				} catch (IOException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//			}
+		} //회원가입 action end
+		
+		if(e.getActionCommand().contentEquals("LOGIN")) { //로그인 Action
+			System.out.println("로그인~~");
+			dispose();
+			new MainForm();
+		} //로그인 Action end
+	}
+
+	private void joinUser(Map<String, UserInfo> userJoinInfo) {
+		// TODO Auto-generated method stub
+
 	}
 
 
