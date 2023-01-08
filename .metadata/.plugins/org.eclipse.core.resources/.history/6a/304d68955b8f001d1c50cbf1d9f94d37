@@ -1,0 +1,79 @@
+package com.test;
+
+import java.awt.Button;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.TextField;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+
+public class Client extends Frame implements MouseListener,ActionListener{
+	Socket clientSock;
+	//로그인
+	Panel northP, centerP, idP, pwP, eastP, southP;
+	JLabel northL, joinL;
+	Label idL, pwL;
+	TextField idTf, pwTf;
+	Button loginBtn;
+	Dimension di;
+	//회원가입
+	Dialog dia;
+	Panel joinP, joinP1, joinP2;
+	Label joinIdL, joinPwL;
+	JButton joinBtn;
+	TextField joinIdTf,joinPwTf;
+	
+//	ArrayList<UserInfo> userList = new ArrayList<UserInfo>();
+
+	public Client() {
+		// TODO Auto-generated constructor stub
+		String url = "127.0.0.1";
+		int port =8080;
+
+		try {
+			clientSock = new Socket(url,port);
+			
+			addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent e) {
+					// TODO Auto-generated method stub
+//					if(!change)dispose();
+					dispose();
+				}
+			});
+			
+
+			
+			init();
+			setting();
+			batch();
+			//Listener
+			joinL.addMouseListener(this);
+			loginBtn.addActionListener(this);
+			setVisible(true);
+			
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public static void main(String[] args) {
+		 new Client();
+	}
+}

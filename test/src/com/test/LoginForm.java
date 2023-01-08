@@ -6,9 +6,7 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Frame;
-import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.Panel;
 import java.awt.TextField;
@@ -18,16 +16,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +43,6 @@ public class LoginForm extends Frame implements MouseListener,ActionListener{
 	Label joinIdL, joinPwL;
 	JButton joinBtn;
 	TextField joinIdTf,joinPwTf;
-	UserInfo userInfo;
 	Socket clientSock;
 //	ArrayList<UserInfo> userList = new ArrayList<UserInfo>();
 	OutputStream os = null;
@@ -213,8 +204,8 @@ public class LoginForm extends Frame implements MouseListener,ActionListener{
 		if(e.getActionCommand().equals("회원가입")) { //회원가입 Action
 			String userJoinId = joinIdTf.getText();
 			String userJoinPw = joinPwTf.getText();
-			userInfo = new UserInfo(userJoinId, userJoinPw);		
 //			userList.add(userInfo);
+			UserInfo userInfo = new UserInfo(userJoinId, userJoinPw);		
 			Map<String, UserInfo> userJoinInfo = new HashMap<String, UserInfo>();
 			userJoinInfo.put("join", userInfo);
 			
@@ -224,12 +215,21 @@ public class LoginForm extends Frame implements MouseListener,ActionListener{
 			try {				
 					os = clientSock.getOutputStream();
 					oos = new ObjectOutputStream(os);					
+					
 					oos.writeObject(userJoinInfo);
 
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			} 
+			}finally {
+					try {
+						if(oos!=null)oos.close();				
+						if(os!=null)os.close();				
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+			}
 			
 //			File f = new File("userList.bin");
 //			OutputStream os = null;
