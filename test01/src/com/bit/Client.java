@@ -35,8 +35,8 @@ public class Client extends Frame implements MouseListener,ActionListener{
 	String url = "127.0.0.1";
 	int port =8080;
 	//로그인
-	Panel northP, centerP, idP, pwP, eastP, southP;
-	JLabel northL, joinL;
+	Panel northP, centerP, idP, pwP, loginStatusP, eastP, southP;
+	JLabel northL, joinL,loginStatus;
 	Label idL, pwL;
 	TextField loginIdTf, loginPwTf;
 	Button loginBtn;
@@ -104,7 +104,7 @@ public class Client extends Frame implements MouseListener,ActionListener{
 		//<로그인 창>
 		//north
 		northP = new Panel();
-		northL = new JLabel("이미지 들어갈 예정");
+		northL = new JLabel();
 		//center
 		centerP = new Panel();
 		idP = new Panel();
@@ -113,6 +113,8 @@ public class Client extends Frame implements MouseListener,ActionListener{
 		pwP = new Panel();
 		pwL = new Label("PW :");
 		loginPwTf = new TextField(30);
+		loginStatusP = new Panel();
+		loginStatus = new JLabel();
 		//east
 		eastP = new Panel();
 		di = new Dimension();
@@ -132,7 +134,7 @@ public class Client extends Frame implements MouseListener,ActionListener{
 		centerP.setLayout(new FlowLayout());
 		loginBtn.setPreferredSize(di);	
 		joinL.setText("회원가입");
-		
+		northL.setText("");
 		setBounds(700, 300, 500, 200);
 	}
 	public void batch() {
@@ -141,8 +143,10 @@ public class Client extends Frame implements MouseListener,ActionListener{
 		idP.add(loginIdTf);
 		pwP.add(pwL);
 		pwP.add(loginPwTf);	
+		loginStatusP.add(loginStatus);
 		centerP.add(idP);
 		centerP.add(pwP);
+//		centerP.add(loginStatusP);
 
 		eastP.add(loginBtn);
 		southP.add(joinL);
@@ -226,8 +230,7 @@ public class Client extends Frame implements MouseListener,ActionListener{
 		System.out.println(e.getActionCommand());
 		
 		if(e.getActionCommand().equals("회원가입")) { //회원가입 Action
-			try {
-				clientSock = new Socket(url,port);
+
 				userId = joinIdTf.getText();
 				userPassword = joinPwTf.getText();
 				UserIn userInfo = new UserIn(userId, userPassword);		
@@ -247,15 +250,9 @@ public class Client extends Frame implements MouseListener,ActionListener{
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
-			} catch (UnknownHostException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-
+				} 
+			
+			
 
 
 		} //회원가입 action end
@@ -270,9 +267,20 @@ public class Client extends Frame implements MouseListener,ActionListener{
 				Map<String, UserIn> userLoginInfo = new HashMap<String, UserIn>();
 				userLoginInfo.put("login", userInfo);
 				try {	
-					clientSock = new Socket(url,port);
+					
 					oos.writeObject(userLoginInfo);
 					oos.flush();
+					String serverMsg = br.readLine();
+					System.out.println(serverMsg);
+					if(serverMsg.contains("login Success")) {
+						System.out.println("Cli : login Success");
+						dispose();
+						
+					}else {
+						System.out.println("Cli : login Fail");
+						northL.setText("해당 정보가 없습니다.");
+					}
+					
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
