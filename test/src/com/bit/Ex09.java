@@ -1,4 +1,4 @@
-//package com.test;
+//package com.bit;
 //
 //import java.io.EOFException;
 //import java.io.File;

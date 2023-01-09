@@ -51,6 +51,8 @@ public class Client extends Frame implements ActionListener{
 		OutputStreamWriter osw = null;
 		BufferedReader br = null;
 		
+
+
 		Scanner sc = new Scanner(System.in);
 		
 		try {
