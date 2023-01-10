@@ -42,11 +42,9 @@ public class Server {
 	static InputStream fis = null;
 	static ObjectInputStream fois = null;
 	static File userFile;
-	static ArrayList<UserIn> users;
 	public static void main(String[] args) {
 		System.out.println("서버 실행");
 		ArrayList<PrintWriter> list = new ArrayList<PrintWriter>();
-//		Map<String, UserIn> userMap = new HashMap<String, UserIn>();
 		
 		try {
 			serverSocket = new ServerSocket(8080);
@@ -76,34 +74,35 @@ public class Server {
 								//파일 관련 객체
 								userFile= new File("userList.bin");							
 								
-								fos = new FileOutputStream(userFile);
-								foos = new ObjectOutputStream(fos);
-								
-								fis = new FileInputStream(userFile);
-								fois = new ObjectInputStream(fis);
-								
-
-								list.add(pw);
+								ArrayList<UserIn> users;
+//								list.add(pw);
 								System.out.println("addr : "+addr.getHostAddress());
 								
 								while(true) {
-									System.out.println("시작");
-									if(userFile.exists()) {
-										try {
-											users = (ArrayList<UserIn>)fois.readObject();
+									
+						            File f = new File("userList.txt");
+						            users = new ArrayList<UserIn>();
+						            // txt파일에서 회원 가져오기
+						            if(f.exists()) {
+						               try {
+						                  fis = new FileInputStream(f);
+						                  fois = new ObjectInputStream(fis);
+						                  users = (ArrayList<UserIn>)fois.readObject();
 											for (int i = 0; i < users.size(); i++) {
-												System.out.println(users.get(i).getUserId());
-												System.out.println(users.get(i).getUserPassword());
-												
-											}
+											System.out.println(users.get(i).getUserId());
+											System.out.println(users.get(i).getUserPassword());
 											
-										} catch (Exception e) {
-											// TODO: handle exception
 										}
-									}else {
-										System.out.println("안에 데이터가 없음");
-									}
-//									System.out.println("끝 "+users.size()); //null pofint 뜸
+						               } catch (EOFException e1) {
+						                  // TODO Auto-generated catch block
+						       
+						               } catch (ClassNotFoundException e) {
+						            	   // TODO Auto-generated catch block
+						            	   e.printStackTrace();
+						               } 
+						            }
+									System.out.println("시작");
+
 								HashMap<String, UserIn> ClientInfo =(HashMap<String, UserIn>)  ois.readObject();
 								
 								//회원가입
@@ -114,7 +113,8 @@ public class Server {
 									UserIn user = new UserIn(id, password);
 									ArrayList<UserIn> userIn = new ArrayList<UserIn>();
 									userIn.add(user);
-
+									fos = new FileOutputStream(f);
+									foos = new ObjectOutputStream(fos);
 									try {
 										if(users!=null) {
 											
@@ -122,22 +122,22 @@ public class Server {
 											
 											//파일 로그인 쓰기
 											foos.writeObject(users);
-											foos.flush();
+//											foos.flush();
 											
+											foos.close();
 										}else {
-											userFile.createNewFile();
+											f.createNewFile();
 											foos.writeObject(userIn);
-											foos.flush();
-																						
+//											foos.flush();
+											foos.close();																						
 										}
-										PrintWriter w = new PrintWriter(oos);
-										w.println("join Success");
+									PrintWriter w = new PrintWriter(oos);
+									w.println("join Success");
 										
-										w.flush();
-										System.out.println("회원가입 완료");
-									
-//										if(w!=null)w.close();
-//										if(foos!=null)foos.close();
+									w.flush();
+									System.out.println("회원가입 완료");
+									foos.close();
+									fos.close();
 										} catch (FileNotFoundException e1) {
 										// TODO Auto-generated catch block
 											e1.printStackTrace();
@@ -146,7 +146,7 @@ public class Server {
 											e1.printStackTrace();
 										}
 									
-										} //회원가입 end
+								} //회원가입 end
 								
 										//로그인
 								else if(ClientInfo.containsKey("login")) {
@@ -164,28 +164,35 @@ public class Server {
 												boo = true;
 												break;
 											}	
-//													System.out.println("1id:"+userList.get(i).getUserId()+" pw:"+userList.get(i).getUserPassword());
-//													System.out.println("2id:"+id+" pw:"+password);
 										}
 										if(boo==true) {
 											//회원 존재
-											PrintWriter pw = new PrintWriter(oos);
-											pw.write("login Success");
-											pw.flush();
+											System.out.println("if 회원존재");
+											PrintWriter w = new PrintWriter(oos);
+											w.println("login Success");
+											w.flush();
 										}else {
 											//회원 없음
-											PrintWriter pw = new PrintWriter(oos);
-											pw.write("login Fail");
-											pw.flush();
+											System.out.println("if 회원x");
+											
+											PrintWriter w2 = new PrintWriter(oos);
+											w2.println("login Fail");
+											w2.flush();
 										}
-										boo = false;
+										
 									}else {
 											//회원이 없을 경우
 										System.out.println("회원 파일 존재 안함");
 									}
 								} //로그인 end
+								else if(ClientInfo.containsKey("chat")) {
+									System.out.println("메ㅔㅔ세세세셋세세세세세세세세세지지지지지지지지짖지지");
+								}
 								
-								
+								HashMap<String, ChatInfo> chatInfo =(HashMap<String, ChatInfo>)  ois.readObject();
+								if(chatInfo.containsKey("chat")) { //채팅 시작 시
+									
+								}
 								}//while end
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -197,7 +204,6 @@ public class Server {
 						
 					}//run() end
 
-					
 				});
 				thr.start();
 			}

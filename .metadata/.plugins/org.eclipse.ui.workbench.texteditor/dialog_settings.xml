@@ -8,6 +8,8 @@
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="시작"/>
+			<item value="w"/>
 			<item value="Color"/>
 			<item value="dwdw"/>
 			<item value="&gt;"/>

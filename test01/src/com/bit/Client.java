@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Label;
 import java.awt.Panel;
+import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,6 +48,10 @@ public class Client extends Frame implements MouseListener,ActionListener{
 	Label joinIdL, joinPwL;
 	JButton joinBtn;
 	TextField joinIdTf,joinPwTf;
+	
+	//채팅
+	static TextArea ta = new TextArea();
+	static TextField tf = new TextField();
 	
 	String userId,userPassword;
 //	ArrayList<UserInfo> userList = new ArrayList<UserInfo>();
@@ -227,7 +232,8 @@ public class Client extends Frame implements MouseListener,ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println(e.getActionCommand());
+//		System.out.println("aP:"+e.getActionCommand());
+		System.out.println("aP:"+e.getActionCommand());
 		
 		if(e.getActionCommand().equals("회원가입")) { //회원가입 Action
 
@@ -245,6 +251,7 @@ public class Client extends Frame implements MouseListener,ActionListener{
 					System.out.println(serverMsg);
 					if(serverMsg.contains("join Success")) {
 						System.out.println("Cli : join Success");
+
 						dia.dispose();
 					}
 				} catch (IOException e1) {
@@ -258,7 +265,7 @@ public class Client extends Frame implements MouseListener,ActionListener{
 		} //회원가입 action end
 		
 		if(e.getActionCommand().contentEquals("LOGIN")) { //로그인 Action
-			
+
 				System.out.println("로그인~~");
 				userId = loginIdTf.getText();
 				userPassword = loginPwTf.getText();
@@ -266,31 +273,84 @@ public class Client extends Frame implements MouseListener,ActionListener{
 				UserIn userInfo = new UserIn(userId, userPassword);	
 				Map<String, UserIn> userLoginInfo = new HashMap<String, UserIn>();
 				userLoginInfo.put("login", userInfo);
+				
 				try {	
-					
 					oos.writeObject(userLoginInfo);
 					oos.flush();
 					String serverMsg = br.readLine();
-					System.out.println(serverMsg);
+					System.out.println("로그인 결과 : "+serverMsg);
 					if(serverMsg.contains("login Success")) {
-						System.out.println("Cli : login Success");
-						dispose();
+						System.out.println("Cli : login Success / "+serverMsg);
+//						dispose();
+						this.setVisible(false);
+						System.out.println(clientSock);
+//						new ChatClient(clientSock,userId);
+						
+						//채팅
+						Dialog chat = new Dialog(this);
+						chat.setLayout(new BorderLayout());
+						chat.addWindowListener(new WindowAdapter() {
+							@Override
+							public void windowClosing(WindowEvent e) {
+								// TODO Auto-generated method stub
+								chat.dispose();
+							}
+						});
+						
+						Panel p = new Panel();
+						p.setLayout(new BorderLayout());
+						JLabel userIdLb = new JLabel();
+						JLabel userListLb = new JLabel();
+						JButton exitBtn = new JButton("채팅 나가기");
+						userIdLb.setText("참여자 : "+userId);
+						p.add(userIdLb,BorderLayout.NORTH);
+						p.add(exitBtn, BorderLayout.SOUTH);
+						tf.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								System.out.println("dddddddddddddd");
+								String msg = tf.getText();
+								ChatInfo chatInfo = new ChatInfo(userId, msg);
+								Map<String, ChatInfo> chat = new HashMap<String, ChatInfo>();
+								chat.put("chat", chatInfo);
+								try {
+									oos.writeObject(chat);
+									oos.flush();
+									tf.setText("");
+									tf.setText("");
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+							}
+						});
+						chat.add(ta,BorderLayout.CENTER);
+						chat.add(p,BorderLayout.EAST);
+						chat.add(tf,BorderLayout.SOUTH);
+						
+						chat.setBounds(100, 100, 500, 300);
+						chat.setVisible(true);
+						
+						
+						
+						
+						
 						
 					}else {
-						System.out.println("Cli : login Fail");
-						northL.setText("해당 정보가 없습니다.");
+						System.out.println("Cli : login Fail / "+serverMsg);
+						northL.setText("해당 사용자가 없습니다.");
+						northL.setForeground(Color.red);
 					}
 					
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-//			dispose();
-//			new MainForm();
-			
 
 
 		} //로그인 Action end
+		
 	}
 	
 
