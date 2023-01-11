@@ -1,5 +1,6 @@
 package com.bit;
 
+import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -42,6 +44,11 @@ public class Server {
 	static InputStream fis = null;
 	static ObjectInputStream fois = null;
 	static File userFile;
+	
+	//채팅 관련
+	static InputStreamReader isr = null;
+	static BufferedReader br = null;
+	
 	public static void main(String[] args) {
 		System.out.println("서버 실행");
 		ArrayList<PrintWriter> list = new ArrayList<PrintWriter>();
@@ -59,6 +66,7 @@ public class Server {
 					@Override
 					public void run()  {
 						// TODO Auto-generated method stub
+						System.out.println("Thr : "+Thread.currentThread());
 							try {
 								addr = socket.getInetAddress();
 								is = socket.getInputStream();
@@ -69,13 +77,19 @@ public class Server {
 								
 								osw = new OutputStreamWriter(os);
 								
+								//챗
+								isr = new InputStreamReader(is);
+								br = new BufferedReader(isr);
+								
 								pw = new PrintWriter(osw);
+								
 								
 								//파일 관련 객체
 								userFile= new File("userList.bin");							
 								
+								
 								ArrayList<UserIn> users;
-//								list.add(pw);
+								list.add(pw);
 								System.out.println("addr : "+addr.getHostAddress());
 								
 								while(true) {
@@ -155,7 +169,7 @@ public class Server {
 									password = ClientInfo.get("login").getUserPassword();
 									System.out.println(id+" "+password);
 									boolean boo = false;
-									if(userFile.exists()) {
+									if(f.exists()) {
 										for (int i = 0; i < users.size(); i++) {
 													
 											if( id.equals(users.get(i).getUserId()) && password.equals(users.get(i).getUserPassword()) ) {
@@ -185,14 +199,35 @@ public class Server {
 										System.out.println("회원 파일 존재 안함");
 									}
 								} //로그인 end
-								else if(ClientInfo.containsKey("chat")) {
-									System.out.println("메ㅔㅔ세세세셋세세세세세세세세세지지지지지지지지짖지지");
+//								else if(ClientInfo.containsKey("chat")) {
+//									System.out.println("메ㅔㅔ세세세셋세세세세세세세세세지지지지지지지지짖지지");
+//								}
+								
+
+									
+
+								String msg ;//클라이언트가 보낸 값 저장
+								while((msg=br.readLine())!=null) {
+									System.out.println("받은 메세지 : "+msg);
+//									sg = " "+msg+"님이 입장하였습니다.";
+									for (int i = 0; i < list.size(); i++) {
+										PrintWriter cpw = list.get(i);
+										cpw.println(msg);
+										cpw.flush();
 								}
+								}
+
+								
+								
 								
 								HashMap<String, ChatInfo> chatInfo =(HashMap<String, ChatInfo>)  ois.readObject();
 								if(chatInfo.containsKey("chat")) { //채팅 시작 시
+									System.out.println("챗 넘어옴");
 									
 								}
+								
+								
+								
 								}//while end
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
