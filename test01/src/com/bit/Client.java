@@ -285,13 +285,12 @@ public class Client extends Frame implements MouseListener, ActionListener {
 				System.out.println("로그인 결과 : " + serverMsg);
 				if (serverMsg.contains("login Success")) {
 					System.out.println("Cli : login Success / " + serverMsg);
-//						dispose();
 					this.setVisible(false);
 					System.out.println(clientSock);
-//						new ChatClient(clientSock,userId);
 
 					// 채팅
-					chat();
+//					chat();
+					new ChatClient(userId);
 
 				} else {
 					System.out.println("Cli : login Fail / " + serverMsg);
@@ -311,11 +310,10 @@ public class Client extends Frame implements MouseListener, ActionListener {
 	private void chat() {
 		// TODO Auto-generated method stub
 
-		String alr = userId+"님이 입장 했습니다.";
+		String alr = "*알림!" + userId + "님이 입장 했습니다.*";
 		pw.println(alr);
 		pw.flush();
-		
-		
+
 		Dialog chat = new Dialog(this);
 
 		chat.setLayout(new BorderLayout());
@@ -329,6 +327,7 @@ public class Client extends Frame implements MouseListener, ActionListener {
 
 		TextArea ta = new TextArea();
 		TextField tf = new TextField();
+		tf.setName("chat");
 		Panel p = new Panel();
 		p.setLayout(new BorderLayout());
 		JLabel userIdLb = new JLabel();
@@ -337,10 +336,20 @@ public class Client extends Frame implements MouseListener, ActionListener {
 		userIdLb.setText("참여자 : " + userId);
 		p.add(userIdLb, BorderLayout.NORTH);
 		p.add(exitBtn, BorderLayout.SOUTH);
+		
 		tf.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// 메세지 작성
+				String msg = "chat-"+userId + ":" + tf.getText();
+				System.out.println("클라이언트 작성 글 : " + msg);
+				
+				pw.println(msg);
+				pw.flush();
+				tf.setText("");
+				tf.setText("");
+
 //						String msg = tf.getText();
 //						ChatInfo chatInfo = new ChatInfo(userId, msg);
 //						Map<String, ChatInfo> chat = new HashMap<String, ChatInfo>();
@@ -354,21 +363,6 @@ public class Client extends Frame implements MouseListener, ActionListener {
 //							// TODO Auto-generated catch block
 //							e1.printStackTrace();
 //						}
-				//메세지 작성
-				Thread chatThr = new Thread(new Runnable() {
-
-					@Override
-					public synchronized void run() {
-						// TODO Auto-generated method stub
-						String msg = userId + ":" + tf.getText();
-						System.out.println("클라이언트 작성 글 : " + msg);
-						pw.println(msg);
-						pw.flush();
-						tf.setText("");
-						tf.setText("");
-					}
-				});
-				chatThr.start();
 			}
 		});
 
@@ -379,11 +373,6 @@ public class Client extends Frame implements MouseListener, ActionListener {
 		chat.setBounds(100, 100, 500, 300);
 		chat.setVisible(true);
 
-//				String chatInUser = "";
-//				chatInUser = userId;
-//				pw.println();
-//				pw.flush();
-		
 		// 채팅 접속 알림
 		Thread thr = new Thread(new Runnable() {
 
