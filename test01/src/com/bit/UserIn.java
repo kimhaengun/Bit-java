@@ -11,6 +11,9 @@ public class UserIn implements Serializable{
 		this.userId = userId;
 		this.userPassword = userPassword;
 	}
+	public UserIn(String userId) {
+		this.userId = userId;
+	}
 
 	public String getUserId() {
 		return userId;

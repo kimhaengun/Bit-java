@@ -1,8 +1,0 @@
-package com.step03;
-
-public class Server {
-
-	public static void main(String[] args) {
-		
-	}
-}

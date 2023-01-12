@@ -90,7 +90,7 @@ public class Server {
 							userFile = new File("userList.bin");
 
 							ArrayList<UserIn> users;
-
+							
 							while (true) {
 
 								File f = new File("userList.txt");
@@ -115,9 +115,9 @@ public class Server {
 									}
 								}
 								System.out.println("시작");
+								
 
 								HashMap<String, UserIn> ClientInfo = (HashMap<String, UserIn>) ois.readObject();
-
 								// 회원가입
 								if (ClientInfo.containsKey("join")) {
 									id = ClientInfo.get("join").getUserId();
@@ -183,63 +183,54 @@ public class Server {
 										if (boo == true) {
 											// 회원 존재
 											System.out.println("if 회원존재");
-//											PrintWriter w = new PrintWriter(oos);
-											pw.println("login Success");
-											pw.flush();
+											PrintWriter w = new PrintWriter(oos);
+											w.println("login Success");
+											w.flush();
 											list.add(pw);
 
 										} else {
 											// 회원 없음
 											System.out.println("if 회원x");
 
-//											PrintWriter w2 = new PrintWriter(oos);
-											pw.println("login Fail");
-											pw.flush();
+											PrintWriter w2 = new PrintWriter(oos);
+											w2.println("login Fail");
+											w2.flush();
+											
 										}
-
+										System.out.println("빠져1");
 									} else {
 										// 회원이 없을 경우
 										System.out.println("회원 파일 존재 안함");
 									}
-								} // 로그인 end
-//								else if(ClientInfo.containsKey("chat")) {
-//									System.out.println("메ㅔㅔ세세세셋세세세세세세세세세지지지지지지지지짖지지");
-//								}
-								
-								String c;
-								while((c=br.readLine()) != null) {
-									System.out.println("c:"+c);
-									// 클라이언트가 보낸 메시지 처리
-									if(c.contains("-")) {
-										System.out.println("CCCCCHHHHH");
-										String[] chatarr = c.split("-");
-										String chatm = chatarr[1];
-										for (int i = 0; i < list.size(); i++) {
-											PrintWriter cpw = list.get(i);
-											cpw.println(chatm);
-											cpw.flush();
-										}
-									}else {
-										// 입장 관련
-										System.out.println("등장!!!!");
-										String msg;// 클라이언트가 보낸 값 저장
-										
-										System.out.println("받은 메세지 : " + c + ", " + list.size());
-										for (int i = 0; i < list.size(); i++) {
-											PrintWriter cpw = list.get(i);
-											cpw.println(c);
-											cpw.flush();
-											
-										}
-										
-									}
+									System.out.println("빠져2");
 								}
 								
+								//id 중복체크
+								else if(ClientInfo.containsKey("overlap")) {
+									id = ClientInfo.get("overlap").getUserId();
+									System.out.println("서버 : overlap 요청 받음");
+									boolean b = false;
+									for (int i = 0; i < users.size(); i++) {
+										if(id.equals(users.get(i).getUserId())) {
 
-								HashMap<String, ChatInfo> chatInfo = (HashMap<String, ChatInfo>) ois.readObject();
-								if (chatInfo.containsKey("chat")) { // 채팅 시작 시
-									System.out.println("챗 넘어옴");
+											//중복 아이디 있으면 true
+											b = true;
+											break;
+										}
+									}
+									if(b==true) { // 중복id가 있음
+										PrintWriter w = new PrintWriter(oos);
+										w.println("overlap Fail");
+										w.flush();
+									}else { // 중복 id없음
+										PrintWriter w2 = new PrintWriter(oos);
+										w2.println("overlap sucess");
+										w2.flush();
+									}
+									System.out.println("over 빠져");
 								}
+								System.out.println("over 빠져2");
+
 
 							} // while end
 

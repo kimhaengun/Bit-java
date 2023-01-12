@@ -46,11 +46,12 @@ public class Client extends Frame implements MouseListener, ActionListener {
 	Dimension di;
 	// 회원가입
 	Dialog dia;
-	Panel joinP, joinP1, joinP2;
+	Panel joinP, joinP1, joinP2, overlapP;
 	Label joinIdL, joinPwL;
 	JButton joinBtn;
 	TextField joinIdTf, joinPwTf;
-
+	JLabel overlapLb,overlapResultLb;
+	JButton overlapBtn;
 	// 채팅
 
 	String userId, userPassword;
@@ -89,7 +90,7 @@ public class Client extends Frame implements MouseListener, ActionListener {
 					dispose();
 				}
 			});
-
+			
 			init();
 			setting();
 			batch();
@@ -181,68 +182,103 @@ public class Client extends Frame implements MouseListener, ActionListener {
 				dia.dispose();
 			}
 		});
+		overlapP = new Panel();
+		overlapLb = new JLabel();
 		joinP = new Panel();
 		joinP1 = new Panel();
 		joinP2 = new Panel();
 		joinIdL = new Label("ID   :");
 		joinIdTf = new TextField(30);
-
+		overlapResultLb = new JLabel();
+		overlapBtn = new JButton("중복 체크");
 		joinPwL = new Label("PW :");
 		joinPwTf = new TextField(30);
 		joinBtn = new JButton("회원가입");
+		
 		joinBtn.addActionListener(this);
 		dia.setTitle("회원가입");
 
+		
+		overlapLb.setText("# 필수 Id 중복을 체크 해주세요!");
+		overlapLb.setForeground(Color.red);
 		joinP.setLayout(new BorderLayout());
-
+		overlapResultLb.setText(" ");
+		overlapBtn.setPreferredSize(new Dimension(250, 30));
+		overlapBtn.addActionListener(this);
+		joinBtn.setEnabled(false);
+		
 		joinP1.add(joinIdL);
 		joinP1.add(joinIdTf);
+		joinP1.add(overlapResultLb);
+		joinP1.add(overlapBtn);
 		joinP1.add(joinPwL);
 		joinP1.add(joinPwTf);
 		joinP2.add(joinBtn);
+		overlapP.add(overlapLb);
 
-		joinP.add(new JLabel(" "), BorderLayout.NORTH);
+		
+		joinP.add(overlapP, BorderLayout.NORTH);
 		joinP.add(joinP1, BorderLayout.CENTER);
 		joinP.add(joinP2, BorderLayout.SOUTH);
 
 		dia.add(joinP);
-		dia.setBounds(800, 330, 300, 150);
+		dia.setBounds(800, 330, 300, 220);
 		dia.setVisible(true);
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		// 회원가입 텍스트에 올라올때 색상 변경
-		joinL.setForeground(new Color(80, 188, 223));
-	}
+	public void mouseEntered(MouseEvent e) {joinL.setForeground(new Color(80, 188, 223));}// 회원가입 텍스트에 올라올때 색상 변경
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void mousePressed(MouseEvent e) {}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void mouseReleased(MouseEvent e) {}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		// 회원가입 텍스트에서 빠져나갈때 색상 복구
-		joinL.setForeground(new Color(0, 0, 0));
-	}
+	public void mouseExited(MouseEvent e) {joinL.setForeground(new Color(0, 0, 0));} //색상 복구
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-//		System.out.println("aP:"+e.getActionCommand());
 		System.out.println("aP:" + e.getActionCommand());
-
-		if (e.getActionCommand().equals("회원가입")) { // 회원가입 Action
+		// userId 중복 체크
+		if(e.getActionCommand().equals("중복 체크")) {
+			String inputId = joinIdTf.getText();
+			if(!inputId.equals("")) {
+				//정상적인 Id값
+				System.out.println(inputId);
+				UserIn over = new UserIn(inputId);
+				Map<String,UserIn> overlapMap = new HashMap<String, UserIn>();
+				overlapMap.put("overlap",over);
+				try {
+					oos.writeObject(overlapMap);
+					oos.flush();
+					String serverMsg = br.readLine();
+					System.out.println(serverMsg);
+					if(serverMsg.contains("overlap sucess")) {
+//						System.out.println("서버가 ! 중복 체크 ~~~~~~~~~~~~~~~~");
+						overlapResultLb.setText("=======사용할 수 있는 ID 입니다.=======");
+						overlapResultLb.setForeground(Color.black);
+						overlapBtn.setVisible(false);
+						joinBtn.setEnabled(true);
+					}else if(serverMsg.contains("overlap Fail")){
+//						System.out.println("아이디가 존재함");
+						overlapResultLb.setText("이미 존재하는 ID 입니다.");
+						overlapResultLb.setForeground(Color.red);
+					}
+					
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}else {
+				//id가 빈값일 경우
+				System.out.println("빈값");
+			}
+		} // 중복체크 action end
+		
+		// 회원가입 Action
+		else if (e.getActionCommand().equals("회원가입")) { 
 
 			userId = joinIdTf.getText();
 			userPassword = joinPwTf.getText();
@@ -268,7 +304,8 @@ public class Client extends Frame implements MouseListener, ActionListener {
 
 		} // 회원가입 action end
 
-		if (e.getActionCommand().contentEquals("LOGIN")) { // 로그인 Action
+		// 로그인 Action
+		if (e.getActionCommand().contentEquals("LOGIN")) { 
 
 			System.out.println("로그인~~");
 			userId = loginIdTf.getText();
@@ -281,6 +318,7 @@ public class Client extends Frame implements MouseListener, ActionListener {
 			try {
 				oos.writeObject(userLoginInfo);
 				oos.flush();
+				System.out.println("여긴?");
 				String serverMsg = br.readLine();
 				System.out.println("로그인 결과 : " + serverMsg);
 				if (serverMsg.contains("login Success")) {
@@ -288,12 +326,12 @@ public class Client extends Frame implements MouseListener, ActionListener {
 					this.setVisible(false);
 					System.out.println(clientSock);
 
-					// 채팅
-//					chat();
 					new ChatClient(userId);
 
 				} else {
 					System.out.println("Cli : login Fail / " + serverMsg);
+					loginIdTf.setText("");
+					loginPwTf.setText("");
 					northL.setText("해당 사용자가 없습니다.");
 					northL.setForeground(Color.red);
 				}
@@ -305,94 +343,6 @@ public class Client extends Frame implements MouseListener, ActionListener {
 
 		} // 로그인 Action end
 
-	}
-
-	private void chat() {
-		// TODO Auto-generated method stub
-
-		String alr = "*알림!" + userId + "님이 입장 했습니다.*";
-		pw.println(alr);
-		pw.flush();
-
-		Dialog chat = new Dialog(this);
-
-		chat.setLayout(new BorderLayout());
-		chat.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// TODO Auto-generated method stub
-				chat.dispose();
-			}
-		});
-
-		TextArea ta = new TextArea();
-		TextField tf = new TextField();
-		tf.setName("chat");
-		Panel p = new Panel();
-		p.setLayout(new BorderLayout());
-		JLabel userIdLb = new JLabel();
-		JLabel userListLb = new JLabel();
-		JButton exitBtn = new JButton("채팅 나가기");
-		userIdLb.setText("참여자 : " + userId);
-		p.add(userIdLb, BorderLayout.NORTH);
-		p.add(exitBtn, BorderLayout.SOUTH);
-		
-		tf.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// 메세지 작성
-				String msg = "chat-"+userId + ":" + tf.getText();
-				System.out.println("클라이언트 작성 글 : " + msg);
-				
-				pw.println(msg);
-				pw.flush();
-				tf.setText("");
-				tf.setText("");
-
-//						String msg = tf.getText();
-//						ChatInfo chatInfo = new ChatInfo(userId, msg);
-//						Map<String, ChatInfo> chat = new HashMap<String, ChatInfo>();
-//						chat.put("chat", chatInfo);
-//						try {
-//							oos.writeObject(chat);
-//							oos.flush();
-//							tf.setText("");
-//							tf.setText("");
-//						} catch (IOException e1) {
-//							// TODO Auto-generated catch block
-//							e1.printStackTrace();
-//						}
-			}
-		});
-
-		chat.add(ta, BorderLayout.CENTER);
-		chat.add(p, BorderLayout.EAST);
-		chat.add(tf, BorderLayout.SOUTH);
-
-		chat.setBounds(100, 100, 500, 300);
-		chat.setVisible(true);
-
-		// 채팅 접속 알림
-		Thread thr = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				try {
-					while (true) {
-						String s = br.readLine();
-						System.out.println(s);
-						ta.append(s + "\n");
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-		});
-		thr.start();
-	}
+	} //action end
 
 }
