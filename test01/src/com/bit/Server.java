@@ -47,9 +47,6 @@ public class Server {
 	static ObjectInputStream fois = null;
 	static File userFile;
 
-	// 채팅 관련
-	static InputStreamReader isr = null;
-	static BufferedReader br = null;
 
 	public static void main(String[] args) {
 		System.out.println("서버 실행");
@@ -79,12 +76,6 @@ public class Server {
 							
 							ois = new ObjectInputStream(is);
 							oos = new ObjectOutputStream(os);
-
-							// 챗
-							isr = new InputStreamReader(cis);
-							br = new BufferedReader(isr);
-							osw = new OutputStreamWriter(cos);
-							pw = new PrintWriter(osw);
 
 							// 파일 관련 객체
 							userFile = new File("userList.bin");

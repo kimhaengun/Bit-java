@@ -238,6 +238,7 @@ public class Client extends Frame implements MouseListener, ActionListener {
 	@Override
 	public void mouseExited(MouseEvent e) {joinL.setForeground(new Color(0, 0, 0));} //색상 복구
 
+	//action 이벤트 처리
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("aP:" + e.getActionCommand());
@@ -245,7 +246,7 @@ public class Client extends Frame implements MouseListener, ActionListener {
 		if(e.getActionCommand().equals("중복 체크")) {
 			String inputId = joinIdTf.getText();
 			if(!inputId.equals("")) {
-				//정상적인 Id값
+				// 사용자가 입력한 Id값 Map에 담기
 				System.out.println(inputId);
 				UserIn over = new UserIn(inputId);
 				Map<String,UserIn> overlapMap = new HashMap<String, UserIn>();
@@ -256,12 +257,14 @@ public class Client extends Frame implements MouseListener, ActionListener {
 					String serverMsg = br.readLine();
 					System.out.println(serverMsg);
 					if(serverMsg.contains("overlap sucess")) {
+						//사용할 수 있는 ID
 //						System.out.println("서버가 ! 중복 체크 ~~~~~~~~~~~~~~~~");
 						overlapResultLb.setText("=======사용할 수 있는 ID 입니다.=======");
 						overlapResultLb.setForeground(Color.black);
 						overlapBtn.setVisible(false);
 						joinBtn.setEnabled(true);
 					}else if(serverMsg.contains("overlap Fail")){
+						//사용할 수 없는 ID
 //						System.out.println("아이디가 존재함");
 						overlapResultLb.setText("이미 존재하는 ID 입니다.");
 						overlapResultLb.setForeground(Color.red);
